@@ -5,6 +5,8 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile.local
+    depends_on:
+      - mysql
     env_file:
       - ./api/.env
     volumes:
@@ -13,8 +15,33 @@ services:
       - 3000:3000
     networks:
       - app-network
+  
+  mysql:
+    image: mysql:8
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=app
+      - MYSQL_ROOT_HOST=%
+      - TZ=Asia/Bangkok
+    healthcheck:
+      test: mysql --user=root --password=root
+    networks:
+      - app-network
 
-#Docker Networks
+  pma:
+    image: phpmyadmin/phpmyadmin:5.1.1
+    ports:
+      - "9832:80"
+    depends_on:
+      - mysql
+    links:
+      - mysql:db
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge

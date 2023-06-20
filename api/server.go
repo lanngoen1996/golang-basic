@@ -8,9 +8,7 @@ import (
 func main() {
 	r := gin.Default()
 
-	cors.Cors(r)
-
-	/* listen and serve on 0.0.0.0:8080 */
+	cors.NewApp(r)
 
 	r.Run(cors.GetEnv().HOST + ":" + cors.GetEnv().PORT)
 }

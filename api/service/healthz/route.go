@@ -2,7 +2,7 @@ package healthz
 
 import "github.com/gin-gonic/gin"
 
-func Router(r *gin.Engine) {
+func Router(r *gin.RouterGroup) {
 	healthz := r.Group("healthz")
 	healthz.Use()
 	{
