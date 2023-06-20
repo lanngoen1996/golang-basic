@@ -7,10 +7,10 @@ import (
 )
 
 type UserInterface interface {
-	Get() (*[]User, error)
-	Create(payload *User) (*User, error)
-	Update(payload *User) (*User, error)
-	Find(id string) (*User, error)
+	Get(d *[]User) error
+	Create(d *User) error
+	Update(d *User) error
+	Find(id string, d *User) error
 	Delete(d *User) error
 }
 
@@ -33,35 +33,32 @@ func NewUser(DB *gorm.DB) UserInterface {
 	}
 }
 
-func (u *UserModel) Get() (*[]User, error) {
-	var users []User
-	if res := u.DB.Model(&User{}).Find(&users); res.Error != nil {
-		return nil, res.Error
+func (u *UserModel) Get(d *[]User) error {
+	if res := u.DB.Model(&User{}).Find(&d); res.Error != nil {
+		return res.Error
 	}
-	return &users, nil
+	return nil
 }
 
-func (u *UserModel) Create(payload *User) (*User, error) {
-	user := *payload
-	if res := u.DB.Model(&User{}).Create(&user); res.Error != nil {
-		return nil, res.Error
+func (u *UserModel) Create(d *User) error {
+	if res := u.DB.Model(&User{}).Create(&d); res.Error != nil {
+		return res.Error
 	}
-	return &user, nil
+	return nil
 }
 
-func (u *UserModel) Find(id string) (*User, error) {
-	var user User
-	if res := u.DB.Model(&User{}).First(&user, id); res.Error != nil {
-		return nil, res.Error
+func (u *UserModel) Find(id string, d *User) error {
+	if res := u.DB.Model(&User{}).First(&d, id); res.Error != nil {
+		return res.Error
 	}
-	return &user, nil
+	return nil
 }
 
-func (u *UserModel) Update(payload *User) (*User, error) {
-	if res := u.DB.Save(&payload); res.Error != nil {
-		return nil, res.Error
+func (u *UserModel) Update(d *User) error {
+	if res := u.DB.Save(&d); res.Error != nil {
+		return res.Error
 	}
-	return payload, nil
+	return nil
 }
 
 func (u *UserModel) Delete(d *User) error {

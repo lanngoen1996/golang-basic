@@ -28,8 +28,8 @@ func NewUserController(DB *gorm.DB) UserControllerInterface {
 }
 
 func (u *UserController) GetUsers(c *gin.Context) {
-	users, err := u.model.Get()
-	if err != nil {
+	var users []User
+	if err := u.model.Get(&users); err != nil {
 		c.JSON(500, gin.H{
 			"message": "Get users error.",
 		})
@@ -51,15 +51,15 @@ func (u *UserController) CreateUser(c *gin.Context) {
 		return
 	}
 
-	user, err := u.model.Create(&User{
+	user := &User{
 		Username:  payload.Username,
 		Password:  payload.Password,
 		Email:     payload.Email,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-	})
+	}
 
-	if err != nil {
+	if err := u.model.Create(user); err != nil {
 		c.JSON(500, gin.H{
 			"message": "Create error.",
 		})
@@ -73,10 +73,10 @@ func (u *UserController) CreateUser(c *gin.Context) {
 }
 
 func (u *UserController) FindUser(c *gin.Context) {
+	var user User
 	id := c.Param("id")
 
-	user, err := u.model.Find(id)
-	if err != nil {
+	if err := u.model.Find(id, &user); err != nil {
 		c.JSON(404, gin.H{
 			"message": "Not found.",
 		})
@@ -92,6 +92,7 @@ func (u *UserController) FindUser(c *gin.Context) {
 func (u *UserController) UpdateUser(c *gin.Context) {
 	var payload UserValidator
 	id := c.Param("id")
+	var user User
 
 	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(400, gin.H{
@@ -100,8 +101,7 @@ func (u *UserController) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	user, err := u.model.Find(id)
-	if err != nil {
+	if err := u.model.Find(id, &user); err != nil {
 		c.JSON(404, gin.H{
 			"message": "Not found.",
 		})
@@ -109,10 +109,9 @@ func (u *UserController) UpdateUser(c *gin.Context) {
 	}
 
 	p, _ := json.Marshal(payload)
-	json.Unmarshal(p, user)
+	json.Unmarshal(p, &user)
 
-	update, err := u.model.Update(user)
-	if err != nil {
+	if err := u.model.Update(&user); err != nil {
 		c.JSON(500, gin.H{
 			"message": "Error update.",
 		})
@@ -121,22 +120,22 @@ func (u *UserController) UpdateUser(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"message": "Successful.",
-		"data":    update,
+		"data":    user,
 	})
 }
 
 func (u *UserController) Delete(c *gin.Context) {
 	id := c.Param("id")
+	var user User
 
-	user, err := u.model.Find(id)
-	if err != nil {
+	if err := u.model.Find(id, &user); err != nil {
 		c.JSON(404, gin.H{
 			"message": "Not found.",
 		})
 		return
 	}
 
-	err = u.model.Delete(user)
+	err := u.model.Delete(&user)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"message": "Error delete.",
