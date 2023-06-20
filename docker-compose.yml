@@ -1,0 +1,20 @@
+version: "3.3"
+
+services:
+  api-services:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.local
+    env_file:
+      - ./api/.env
+    volumes:
+      - ./api:/src
+    ports:
+      - 3000:3000
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
