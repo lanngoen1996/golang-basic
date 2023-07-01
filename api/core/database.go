@@ -1,4 +1,4 @@
-package cors
+package core
 
 import (
 	"fmt"
@@ -7,7 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func Database() (conn *gorm.DB) {
+var DB *gorm.DB
+
+func ConnectDB() {
 	dsn := fmt.Sprintf("%s:%s@(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		GetEnv().DB_USERNAME,
 		GetEnv().DB_PASSWORD,
@@ -16,11 +18,11 @@ func Database() (conn *gorm.DB) {
 		GetEnv().DB_NAME,
 	)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	conn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		panic("Failed to connect to database !")
 	}
 
-	return db
+	DB = conn
 }

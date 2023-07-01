@@ -1,4 +1,4 @@
-package users
+package validators
 
 type UserValidator struct {
 	Username string `json:"username" binding:"required"`

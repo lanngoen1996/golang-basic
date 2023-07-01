@@ -1,8 +1,9 @@
-package users
+package model
 
 import (
 	"time"
 
+	"github.com/lanngoen1996/golang-basic/core"
 	"gorm.io/gorm"
 )
 
@@ -27,9 +28,9 @@ type UserModel struct {
 	DB *gorm.DB
 }
 
-func NewUser(DB *gorm.DB) UserInterface {
+func NewUserModel() UserInterface {
 	return &UserModel{
-		DB,
+		DB: core.DB,
 	}
 }
 
