@@ -9,27 +9,18 @@ api
 |
 ├── .env
 ├── Dockerfile.local
-├── cors
-
-    └── app.go
-
-    └── database.go
-
-    └── env.go
-
-    └── migration.go
-├── service
-
-    └── users
-        └── route.go
-        └── controller.go
-        └── model.go
-        .
-        .
-        .
-
 ├── docker-compose.yml
-.
+├── controllers
+    └── users.go
+├── models
+    └── users.go
+├── database
+    └── migration.go
+├── start
+    └── routes.go
+    └── routes
+        └── users.go
+├── validators
 .
 .
 .
